@@ -64,7 +64,7 @@ public class AccountsMenu extends AbstractMenu {
                 System.out.println("Enter the beneficiary accountId: ");
                 String beneficiaryAccountId = accountService.chooseAccountId();
 
-                accountService.updatedDataInAuxFile(currentAccountId,amountOfMoney,beneficiaryAccountId);
+                accountService.updatedDataInAuxFile(currentAccountId,amountOfMoney,beneficiaryAccountId,user);
                 accountService.deleteOldFile(ApplicationConst.FILE_ACCOUNTS_PATH);
                 accountService.renameFile(ApplicationConst.FILE_ACCOUNTS_PATH_AUX,
                         ApplicationConst.FILE_ACCOUNTS_PATH);

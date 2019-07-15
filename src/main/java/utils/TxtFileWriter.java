@@ -1,6 +1,10 @@
 package utils;
 
+import model.Account;
+import model.User;
+
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -24,7 +28,7 @@ public class TxtFileWriter {
     }
 
     public void customWrite(ArrayList<String> listOfAccounts, String currentAccountId,
-                            int amountOfMoney, String beneficiaryAccountId){
+                            int amountOfMoney, String beneficiaryAccountId, User user){
 
         try(BufferedWriter bufferedWriterAux = new BufferedWriter(
                 new FileWriter(ApplicationConst.FILE_ACCOUNTS_PATH_AUX))){
@@ -40,13 +44,21 @@ public class TxtFileWriter {
                 if (line.contains(currentAccountId)) {
                     String[] args = line.split(" ");
                     String updateCurrentBalance = (Integer.parseInt(args[2]) - amountOfMoney)+"";
-                    line =args[0] + " " + args[1] + " " +  updateCurrentBalance + " " + args[3]+" ";
+                    line = args[0] + " " + args[1] + " " +  updateCurrentBalance + " " + args[3]+" ";
+
+                   Account account = new Account(tokens[1], tokens[0],
+                            new BigDecimal(updateCurrentBalance), AccountUtil.getCurrencyType(tokens[3]));
+                    user.addAccount(account);
                 }
 
                 if (line.contains(beneficiaryAccountId)) {
                     String[] args = line.split(" ");
                     String updateCurrentBalance = (Integer.parseInt(args[2]) + amountOfMoney)+"";
                     line =args[0] + " " + args[1] + " " +  updateCurrentBalance + " " + args[3]+" ";
+
+                    Account account = new Account(tokens[1], tokens[0],
+                            new BigDecimal(updateCurrentBalance), AccountUtil.getCurrencyType(tokens[3]));
+                    user.addAccount(account);
                 }
 
 
@@ -58,7 +70,5 @@ public class TxtFileWriter {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //bufferedWriterAux.close();
     }
 }

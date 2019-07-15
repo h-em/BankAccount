@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -99,7 +98,7 @@ public class AccountService {
         loger.info("" + user);
     }
 
-    public void updatedDataInAuxFile(String currentAccountId, int amountOfMoney, String beneficiaryAccountId) {
+    public void updatedDataInAuxFile(String currentAccountId, int amountOfMoney, String beneficiaryAccountId,User user) {
         //creez un fisier auxiliar pentu a scrie in el
         TxtFileWriter txtFileWriter = new TxtFileWriter(ApplicationConst.FILE_ACCOUNTS_PATH_AUX);
 
@@ -108,7 +107,7 @@ public class AccountService {
         ArrayList<String> listOfAccounts = fileReader.read();
 
         //scriu in noul fsier toate datele din vechiul fisier + balanta actualizata
-        txtFileWriter.customWrite(listOfAccounts, currentAccountId, amountOfMoney,beneficiaryAccountId);
+        txtFileWriter.customWrite(listOfAccounts, currentAccountId, amountOfMoney,beneficiaryAccountId,user);
 
     }
 
