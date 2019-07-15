@@ -13,6 +13,15 @@ public class User {
         this.accounts = accounts;
     }
 
+
+    public Account getAccount(String accountId){
+        Account account = null;
+        if(accounts.containsKey(accountId)){
+            account = accounts.get(accountId);
+        }
+        return account;
+    }
+
     public void addAccount(Account account){
         accounts.put(account.getAccountId(),account);
     }

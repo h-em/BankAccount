@@ -18,9 +18,9 @@ public class TxtFileWriter {
     }
 
     public void write(String line) {
-        try(BufferedWriter bufferedWriter =
-                    new BufferedWriter(
-                            new FileWriter(ApplicationConst.FILE_ACCOUNTS_PATH,true))){
+        try (BufferedWriter bufferedWriter =
+                     new BufferedWriter(
+                             new FileWriter(ApplicationConst.FILE_ACCOUNTS_PATH, true))) {
             bufferedWriter.write(line);
         } catch (IOException e) {
             loger.warning("Error!" + e.getMessage());
@@ -28,10 +28,10 @@ public class TxtFileWriter {
     }
 
     public void customWrite(ArrayList<String> listOfAccounts, String currentAccountId,
-                            int amountOfMoney, String beneficiaryAccountId, User user){
+                            int amountOfMoney, String beneficiaryAccountId, User user) {
 
-        try(BufferedWriter bufferedWriterAux = new BufferedWriter(
-                new FileWriter(ApplicationConst.FILE_ACCOUNTS_PATH_AUX))){
+        try (BufferedWriter bufferedWriterAux = new BufferedWriter(
+                new FileWriter(ApplicationConst.FILE_ACCOUNTS_PATH_AUX))) {
 
             for (String line : listOfAccounts) {
                 String[] tokens = line.split(" ");
@@ -43,22 +43,22 @@ public class TxtFileWriter {
 
                 if (line.contains(currentAccountId)) {
                     String[] args = line.split(" ");
-                    String updateCurrentBalance = (Integer.parseInt(args[2]) - amountOfMoney)+"";
-                    line = args[0] + " " + args[1] + " " +  updateCurrentBalance + " " + args[3]+" ";
+                    String updateCurrentBalance = (Integer.parseInt(args[2]) - amountOfMoney) + "";
+                    line = args[0] + " " + args[1] + " " + updateCurrentBalance + " " + args[3] + " ";
 
-                   Account account = new Account(tokens[1], tokens[0],
+                   /* Account account = new Account(tokens[1], tokens[0],
                             new BigDecimal(updateCurrentBalance), AccountUtil.getCurrencyType(tokens[3]));
-                    user.addAccount(account);
+                    user.addAccount(account);*/
                 }
 
                 if (line.contains(beneficiaryAccountId)) {
                     String[] args = line.split(" ");
-                    String updateCurrentBalance = (Integer.parseInt(args[2]) + amountOfMoney)+"";
-                    line =args[0] + " " + args[1] + " " +  updateCurrentBalance + " " + args[3]+" ";
+                    String updateCurrentBalance = (Integer.parseInt(args[2]) + amountOfMoney) + "";
+                    line = args[0] + " " + args[1] + " " + updateCurrentBalance + " " + args[3] + " ";
 
-                    Account account = new Account(tokens[1], tokens[0],
+                  /*  Account account = new Account(tokens[1], tokens[0],
                             new BigDecimal(updateCurrentBalance), AccountUtil.getCurrencyType(tokens[3]));
-                    user.addAccount(account);
+                    user.addAccount(account);*/
                 }
 
 

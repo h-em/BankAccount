@@ -7,6 +7,7 @@ import utils.ApplicationConst;
 import utils.TxtFileWriter;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -51,20 +52,34 @@ public class AccountsMenu extends AbstractMenu {
                 ///intoduc noua valoare
                 boolean areEnoughMoney = false;
                 int amountOfMoney = 0;
-                while(!areEnoughMoney){
+                while (!areEnoughMoney) {
                     amountOfMoney = accountService.insertAmountOfMoney();
-                        if(accountService.getCurrentBalance(currentAccountId) - amountOfMoney >= 0){
-                            areEnoughMoney = true;
-                        }else{
-                            System.out.println("You don't have enough money!");
-                            System.out.println("You should ransfer a smaller amount!");
-                        }
+                    if (accountService.getCurrentBalance(currentAccountId) - amountOfMoney >= 0) {
+                        areEnoughMoney = true;
+                    } else {
+                        System.out.println("You don't have enough money!");
+                        System.out.println("You should ransfer a smaller amount!");
+                    }
                 }
 
                 System.out.println("Enter the beneficiary accountId: ");
                 String beneficiaryAccountId = accountService.chooseAccountId();
 
-                accountService.updatedDataInAuxFile(currentAccountId,amountOfMoney,beneficiaryAccountId,user);
+
+                //actualizez balanta pentru contul sursa
+                Account sourceAccount = user.getAccount(currentAccountId);
+                int sourceNewBalance = accountService.getCurrentBalance(currentAccountId) - amountOfMoney;
+                sourceAccount.setBalance(new BigDecimal(sourceNewBalance));
+                user.addAccount(sourceAccount);
+
+                //actualizez balanta pentru contul destinatie
+                Account destinationAccount = user.getAccount(beneficiaryAccountId);
+                int destinationNewBalance = accountService.getCurrentBalance(beneficiaryAccountId) + amountOfMoney;
+                destinationAccount.setBalance(new BigDecimal(destinationNewBalance));
+                user.addAccount(destinationAccount);
+
+
+                accountService.updatedDataInAuxFile(currentAccountId, amountOfMoney, beneficiaryAccountId, user);
                 accountService.deleteOldFile(ApplicationConst.FILE_ACCOUNTS_PATH);
                 accountService.renameFile(ApplicationConst.FILE_ACCOUNTS_PATH_AUX,
                         ApplicationConst.FILE_ACCOUNTS_PATH);

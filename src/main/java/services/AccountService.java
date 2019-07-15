@@ -98,7 +98,7 @@ public class AccountService {
         loger.info("" + user);
     }
 
-    public void updatedDataInAuxFile(String currentAccountId, int amountOfMoney, String beneficiaryAccountId,User user) {
+    public void updatedDataInAuxFile(String currentAccountId, int amountOfMoney, String beneficiaryAccountId, User user) {
         //creez un fisier auxiliar pentu a scrie in el
         TxtFileWriter txtFileWriter = new TxtFileWriter(ApplicationConst.FILE_ACCOUNTS_PATH_AUX);
 
@@ -107,7 +107,7 @@ public class AccountService {
         ArrayList<String> listOfAccounts = fileReader.read();
 
         //scriu in noul fsier toate datele din vechiul fisier + balanta actualizata
-        txtFileWriter.customWrite(listOfAccounts, currentAccountId, amountOfMoney,beneficiaryAccountId,user);
+        txtFileWriter.customWrite(listOfAccounts, currentAccountId, amountOfMoney, beneficiaryAccountId, user);
 
     }
 
@@ -136,7 +136,7 @@ public class AccountService {
         }
     }
 
-    public String chooseAccountId(){
+    public String chooseAccountId() {
         Scanner scanner = new Scanner(System.in);
 
         ////introduc accountId. Cautarea o sa se faca in functie de id
@@ -172,7 +172,7 @@ public class AccountService {
         return amountOfMoney;
     }
 
-    public int getCurrentBalance(String currentAccountId){
+    public int getCurrentBalance(String currentAccountId) {
 
         TxtFileReader txtFileReader = new TxtFileReader(ApplicationConst.FILE_ACCOUNTS_PATH);
         ArrayList<String> listOfAccounts = txtFileReader.read();
@@ -191,7 +191,7 @@ public class AccountService {
                 currentBalance = Integer.parseInt(args[2]);
                 break;
             }
-    }
+        }
         return currentBalance;
     }
 }

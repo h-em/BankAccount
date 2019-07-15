@@ -9,7 +9,7 @@ public class TxtFileReader {
     private static final Logger loger = Logger.getLogger(Logger.class.getName());
 
 
-    public TxtFileReader(String fileName){
+    public TxtFileReader(String fileName) {
         this.fileName = fileName;
     }
 
@@ -20,7 +20,7 @@ public class TxtFileReader {
     public ArrayList<String> read() {
         ArrayList<String> lines = new ArrayList<String>();
 
-        try(BufferedReader reader = new BufferedReader(new FileReader(fileName))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 lines.add(line);
