@@ -28,7 +28,7 @@ public class TxtFileWriter {
     }
 
     public void customWrite(ArrayList<String> listOfAccounts, String currentAccountId,
-                            int amountOfMoney, String beneficiaryAccountId, User user) {
+                            int amountOfMoney, String beneficiaryAccountId) {
 
         try (BufferedWriter bufferedWriterAux = new BufferedWriter(
                 new FileWriter(ApplicationConst.FILE_ACCOUNTS_PATH_AUX))) {

@@ -98,7 +98,7 @@ public class AccountService {
         loger.info("" + user);
     }
 
-    public void updatedDataInAuxFile(String currentAccountId, int amountOfMoney, String beneficiaryAccountId, User user) {
+    public void updatedDataInAuxFile(Account sourceAccount, Account destinationAccount, int amountOfMoney) {
         //creez un fisier auxiliar pentu a scrie in el
         TxtFileWriter txtFileWriter = new TxtFileWriter(ApplicationConst.FILE_ACCOUNTS_PATH_AUX);
 
@@ -107,8 +107,9 @@ public class AccountService {
         ArrayList<String> listOfAccounts = fileReader.read();
 
         //scriu in noul fsier toate datele din vechiul fisier + balanta actualizata
-        txtFileWriter.customWrite(listOfAccounts, currentAccountId, amountOfMoney, beneficiaryAccountId, user);
-
+        String sourceAccountIdStr = sourceAccount.getAccountId();
+        String destinationAccountIdStr = destinationAccount.getAccountId();
+        txtFileWriter.customWrite(listOfAccounts, sourceAccountIdStr, amountOfMoney, destinationAccountIdStr);
     }
 
     public void deleteOldFile(String fileAccountsPath) {
@@ -172,26 +173,73 @@ public class AccountService {
         return amountOfMoney;
     }
 
-    public int getCurrentBalance(String currentAccountId) {
+    public void makePayments() {
+        //afisez conturile disponibile
+        displayAvalableAccounts();
 
-        TxtFileReader txtFileReader = new TxtFileReader(ApplicationConst.FILE_ACCOUNTS_PATH);
-        ArrayList<String> listOfAccounts = txtFileReader.read();
-        int currentBalance = 0;
+        //introduc si validez contul sursa
+        Account sourceAccount = null;
+        while (sourceAccount == null) {
+            ////aleg un accountId din lista. Cautarea o sa se faca in functie de id
+            System.out.println("From which account do you want to transfer?");
+            String sourceAccountStr = chooseAccountId();
+            sourceAccount = user.getAccount(sourceAccountStr);
+        }
 
-        for (String line : listOfAccounts) {
-            String[] tokens = line.split(" ");
-            if (tokens.length != 4) continue;
-            if (!AccountUtil.isValidId(tokens[0])) continue;
-            int accountBalance = Integer.parseInt(tokens[2]);
-            if (accountBalance < 0) continue;
-            if (!AccountUtil.isCurrencyType(tokens[3])) continue;
 
-            if (line.contains(currentAccountId)) {
-                String[] args = line.split(" ");
-                currentBalance = Integer.parseInt(args[2]);
-                break;
+        ///intoduc noua valoare + validare
+        boolean areEnoughMoney = false;
+        int amountOfMoney = 0;
+        while (!areEnoughMoney) {
+            amountOfMoney = insertAmountOfMoney();
+            BigDecimal sourceBalance = sourceAccount.getBalance();
+            if (sourceBalance.subtract(new BigDecimal(amountOfMoney)).compareTo(BigDecimal.ZERO) == -1){
+                System.out.println("You don't have enough money!");
+                System.out.println("You should ransfer a smaller amount!");
+            } else {
+                areEnoughMoney = true;
             }
         }
-        return currentBalance;
+
+        //introduc si validez contul destinatie
+        Account destinationAccount = null;
+        while(destinationAccount == null) {
+            System.out.println("Enter the beneficiary accountId: ");
+            String beneficiaryAccountId = chooseAccountId();
+            destinationAccount = user.getAccount(beneficiaryAccountId);
+        }
+
+        //actualizez balantele
+        transferMoney(sourceAccount, destinationAccount, amountOfMoney);
+        updateAccountsFile(sourceAccount,destinationAccount,amountOfMoney);
+
     }
+
+
+    public void transferMoney(Account sourceAccount, Account destinationAccount, int amountOfMoney){
+
+        BigDecimal amountOfMoneyToSend = new BigDecimal(amountOfMoney);
+
+        //actualizez balanta pentru contul sursa
+        BigDecimal sourceNewBalance = sourceAccount.getBalance().subtract( amountOfMoneyToSend);
+        sourceAccount.setBalance(sourceNewBalance);
+        user.addAccount(sourceAccount);
+
+        //actualizez balanta pentru contul destinatie
+        BigDecimal destinationNewBalance = destinationAccount.getBalance().add(amountOfMoneyToSend);
+        destinationAccount.setBalance(destinationNewBalance);
+        user.addAccount(destinationAccount);
+    }
+
+    public void updateAccountsFile(Account sourceAccount, Account destAcount,  int amountOfMoney){
+
+        updatedDataInAuxFile(sourceAccount, destAcount, amountOfMoney);
+        deleteOldFile(ApplicationConst.FILE_ACCOUNTS_PATH);
+        renameFile(ApplicationConst.FILE_ACCOUNTS_PATH_AUX,
+                ApplicationConst.FILE_ACCOUNTS_PATH);
+
+    }
+
+
+
 }

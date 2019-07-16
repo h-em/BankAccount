@@ -43,47 +43,7 @@ public class AccountsMenu extends AbstractMenu {
                 txtFileWriter.write(buildString(account));
                 break;
             case 3:
-
-                ////aleg un accountId din lista. Cautarea o sa se faca in functie de id
-                System.out.println("From which account do you want to transfer?");
-                accountService.displayAvalableAccounts();
-                String currentAccountId = accountService.chooseAccountId();
-
-                ///intoduc noua valoare
-                boolean areEnoughMoney = false;
-                int amountOfMoney = 0;
-                while (!areEnoughMoney) {
-                    amountOfMoney = accountService.insertAmountOfMoney();
-                    if (accountService.getCurrentBalance(currentAccountId) - amountOfMoney >= 0) {
-                        areEnoughMoney = true;
-                    } else {
-                        System.out.println("You don't have enough money!");
-                        System.out.println("You should ransfer a smaller amount!");
-                    }
-                }
-
-                System.out.println("Enter the beneficiary accountId: ");
-                String beneficiaryAccountId = accountService.chooseAccountId();
-
-
-                //actualizez balanta pentru contul sursa
-                Account sourceAccount = user.getAccount(currentAccountId);
-                int sourceNewBalance = accountService.getCurrentBalance(currentAccountId) - amountOfMoney;
-                sourceAccount.setBalance(new BigDecimal(sourceNewBalance));
-                user.addAccount(sourceAccount);
-
-                //actualizez balanta pentru contul destinatie
-                Account destinationAccount = user.getAccount(beneficiaryAccountId);
-                int destinationNewBalance = accountService.getCurrentBalance(beneficiaryAccountId) + amountOfMoney;
-                destinationAccount.setBalance(new BigDecimal(destinationNewBalance));
-                user.addAccount(destinationAccount);
-
-
-                accountService.updatedDataInAuxFile(currentAccountId, amountOfMoney, beneficiaryAccountId, user);
-                accountService.deleteOldFile(ApplicationConst.FILE_ACCOUNTS_PATH);
-                accountService.renameFile(ApplicationConst.FILE_ACCOUNTS_PATH_AUX,
-                        ApplicationConst.FILE_ACCOUNTS_PATH);
-
+                accountService.makePayments();
                 break;
             case 4:
                 accountService.displayCurrnetInfo();

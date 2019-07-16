@@ -22,12 +22,10 @@ public class LoginService {
             if(tokens.length != 2){
                 continue;
             }
-            if(tokens[0].equals(userId) && tokens[1].equals(password)){
+            if(tokens[0].equals(userId) && tokens[1].equals(password)) {
                 Map<String, Account> accounts = new HashMap<String, Account>();
-                user = new User(userId,password,accounts);
+                user = new User(userId, password, accounts);
                 break;
-            }else{
-
             }
         }
         return user;
