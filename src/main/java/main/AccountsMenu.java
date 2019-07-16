@@ -4,6 +4,7 @@ import model.Account;
 import model.User;
 import services.AccountService;
 import utils.ApplicationConst;
+import utils.NegativeAmountOfMoneyException;
 import utils.TxtFileWriter;
 
 import java.io.IOException;
@@ -43,7 +44,11 @@ public class AccountsMenu extends AbstractMenu {
                 txtFileWriter.write(buildString(account));
                 break;
             case 3:
-                accountService.makePayments();
+                try {
+                    accountService.makePayments();
+                } catch (NegativeAmountOfMoneyException e) {
+                    e.printStackTrace();
+                }
                 break;
             case 4:
                 accountService.displayCurrnetInfo();

@@ -170,7 +170,7 @@ public class AccountService {
         return amountOfMoney;
     }
 
-    public void makePayments() {
+    public void makePayments() throws NegativeAmountOfMoneyException {
         //afisez conturile disponibile
         displayAvalableAccounts();
 
@@ -224,14 +224,14 @@ public class AccountService {
     }
 
 
-    public void transferMoney(Account sourceAccount, Account destinationAccount, int amountOfMoney){
+    public void transferMoney(Account sourceAccount, Account destinationAccount, int amountOfMoney) throws NegativeAmountOfMoneyException {
 
         BigDecimal amountOfMoneyToSend = new BigDecimal(amountOfMoney);
 
         //actualizez balanta pentru contul sursa
         BigDecimal sourceNewBalance = sourceAccount.getBalance().subtract( amountOfMoneyToSend);
         if(sourceNewBalance.compareTo(BigDecimal.ZERO) == -1){
-            throw new NegativeAmountOfMoneyException("payment can not be made because you do not have enough money!")
+            throw new NegativeAmountOfMoneyException("payment can not be made because you do not have enough money!");
         }
         sourceAccount.setBalance(sourceNewBalance);
         user.addAccount(sourceAccount);
