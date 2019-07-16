@@ -58,12 +58,10 @@ public class AccountService {
             isValidAccount = AccountUtil.isValidId(accountId);
         }
 
-
         System.out.println("Amount of money: (should be grather than 0, only number are accepted)");
         int balanceStr = 0;
         boolean isValidBalnece = false;
         while (!isValidBalnece) {
-
             try {
                 balanceStr = scanner.nextInt();
             } catch (Exception e) {
@@ -181,7 +179,7 @@ public class AccountService {
             System.out.println("From which account do you want to transfer?");
             String sourceAccountStr = chooseAccountId();
             sourceAccount = user.getAccount(sourceAccountStr);
-            if(sourceAccount == null){
+            if (sourceAccount == null) {
                 System.out.println("Account you entered is not in your account list!");
             }
         }
@@ -193,23 +191,23 @@ public class AccountService {
         while (!areEnoughMoney) {
             amountOfMoney = insertAmountOfMoney();
             BigDecimal sourceBalance = sourceAccount.getBalance();
-            if (sourceBalance.subtract(new BigDecimal(amountOfMoney)).compareTo(BigDecimal.ZERO) == -1){
+            if (sourceBalance.subtract(new BigDecimal(amountOfMoney)).compareTo(BigDecimal.ZERO) == -1) {
                 System.out.println("You don't have enough money!");
                 System.out.println("You should transfer a smaller amount!");
-            } else if(amountOfMoney < 0) {
+            } else if (amountOfMoney < 0) {
                 System.out.println("The amount of money should be higher than 0!");
-            }else{
+            } else {
                 areEnoughMoney = true;
             }
         }
 
         //introduc si validez contul destinatie
         Account destinationAccount = null;
-        while(destinationAccount == null) {
+        while (destinationAccount == null) {
             System.out.println("Enter the beneficiary accountId: ");
             String beneficiaryAccountId = chooseAccountId();
             destinationAccount = user.getAccount(beneficiaryAccountId);
-            if(destinationAccount == null){
+            if (destinationAccount == null) {
                 System.out.println("Account you entered is not in your account list!");
             }
         }
@@ -217,7 +215,7 @@ public class AccountService {
         //actualizez balantele
         transferMoney(sourceAccount, destinationAccount, amountOfMoney);
         //actualizez fisierele
-        updateAccountsFile(sourceAccount,destinationAccount,amountOfMoney);
+        updateAccountsFile(sourceAccount, destinationAccount, amountOfMoney);
 
         //afisez conturile sa vad daca s-au facut modificarile
         displayAvalableAccounts();
@@ -229,8 +227,8 @@ public class AccountService {
         BigDecimal amountOfMoneyToSend = new BigDecimal(amountOfMoney);
 
         //actualizez balanta pentru contul sursa
-        BigDecimal sourceNewBalance = sourceAccount.getBalance().subtract( amountOfMoneyToSend);
-        if(sourceNewBalance.compareTo(BigDecimal.ZERO) == -1){
+        BigDecimal sourceNewBalance = sourceAccount.getBalance().subtract(amountOfMoneyToSend);
+        if (sourceNewBalance.compareTo(BigDecimal.ZERO) == -1) {
             throw new NegativeAmountOfMoneyException("payment can not be made because you do not have enough money!");
         }
         sourceAccount.setBalance(sourceNewBalance);
@@ -242,7 +240,7 @@ public class AccountService {
         user.addAccount(destinationAccount);
     }
 
-    public void updateAccountsFile(Account sourceAccount, Account destAcount,  int amountOfMoney){
+    public void updateAccountsFile(Account sourceAccount, Account destAcount, int amountOfMoney) {
 
         updatedDataInAuxFile(sourceAccount, destAcount, amountOfMoney);
         deleteOldFile(ApplicationConst.FILE_ACCOUNTS_PATH);
@@ -250,7 +248,6 @@ public class AccountService {
                 ApplicationConst.FILE_ACCOUNTS_PATH);
 
     }
-
 
 
 }

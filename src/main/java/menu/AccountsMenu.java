@@ -1,4 +1,4 @@
-package main;
+package menu;
 
 import model.Account;
 import model.User;
@@ -8,7 +8,6 @@ import utils.NegativeAmountOfMoneyException;
 import utils.TxtFileWriter;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.Scanner;
 import java.util.logging.Logger;
 

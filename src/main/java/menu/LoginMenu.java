@@ -1,4 +1,4 @@
-package main;
+package menu;
 
 import model.User;
 import services.LoginService;
