@@ -3,10 +3,7 @@ package services;
 import model.Account;
 import model.CurrencyType;
 import model.User;
-import utils.AccountUtil;
-import utils.ApplicationConst;
-import utils.TxtFileReader;
-import utils.TxtFileWriter;
+import utils.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -184,6 +181,9 @@ public class AccountService {
             System.out.println("From which account do you want to transfer?");
             String sourceAccountStr = chooseAccountId();
             sourceAccount = user.getAccount(sourceAccountStr);
+            if(sourceAccount == null){
+                System.out.println("Account you entered is not in your account list!");
+            }
         }
 
 
@@ -195,8 +195,10 @@ public class AccountService {
             BigDecimal sourceBalance = sourceAccount.getBalance();
             if (sourceBalance.subtract(new BigDecimal(amountOfMoney)).compareTo(BigDecimal.ZERO) == -1){
                 System.out.println("You don't have enough money!");
-                System.out.println("You should ransfer a smaller amount!");
-            } else {
+                System.out.println("You should transfer a smaller amount!");
+            } else if(amountOfMoney < 0) {
+                System.out.println("The amount of money should be higher than 0!");
+            }else{
                 areEnoughMoney = true;
             }
         }
@@ -207,12 +209,18 @@ public class AccountService {
             System.out.println("Enter the beneficiary accountId: ");
             String beneficiaryAccountId = chooseAccountId();
             destinationAccount = user.getAccount(beneficiaryAccountId);
+            if(destinationAccount == null){
+                System.out.println("Account you entered is not in your account list!");
+            }
         }
 
         //actualizez balantele
         transferMoney(sourceAccount, destinationAccount, amountOfMoney);
+        //actualizez fisierele
         updateAccountsFile(sourceAccount,destinationAccount,amountOfMoney);
 
+        //afisez conturile sa vad daca s-au facut modificarile
+        displayAvalableAccounts();
     }
 
 
@@ -222,6 +230,9 @@ public class AccountService {
 
         //actualizez balanta pentru contul sursa
         BigDecimal sourceNewBalance = sourceAccount.getBalance().subtract( amountOfMoneyToSend);
+        if(sourceNewBalance.compareTo(BigDecimal.ZERO) == -1){
+            throw new NegativeAmountOfMoneyException("payment can not be made because you do not have enough money!")
+        }
         sourceAccount.setBalance(sourceNewBalance);
         user.addAccount(sourceAccount);
 
